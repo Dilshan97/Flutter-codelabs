@@ -22,6 +22,7 @@ class ChatScreen extends StatefulWidget{
 }
 
 class ChatScreenState extends State<ChatScreen> {
+  final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textEditingController = new TextEditingController();
 
   Widget _buildTextComposer()=> new IconTheme(                                            //new
@@ -52,6 +53,12 @@ class ChatScreenState extends State<ChatScreen> {
   //this method will fire when user clicks on the submit button of the textField
   void _handleSubmitted(String text){
     _textEditingController.clear();
+    ChatMessage message = new ChatMessage(
+      text: text,
+    );
+    setState(() {
+      _messages.insert(0, message);
+    });
   }
 
   @override
@@ -61,7 +68,26 @@ class ChatScreenState extends State<ChatScreen> {
           title: new Text("Friendlychat"),
           backgroundColor: Colors.deepOrange,
       ),
-      body: _buildTextComposer(),
+      body: new Column(
+        children: <Widget>[
+          new Flexible(
+              child: new ListView.builder(
+                  padding: new EdgeInsets.all(8.0),
+                  reverse: true,
+                  itemBuilder: (_, int index) => _messages[index],
+                  itemCount: _messages.length,
+              ),
+          ),
+
+          new Divider(height: 2.0,),
+          new Container(
+            decoration: new BoxDecoration(
+              color: Theme.of(context).cardColor,
+            ),
+            child: _buildTextComposer(),
+          ),
+        ],
+      ),
 
 
     );
